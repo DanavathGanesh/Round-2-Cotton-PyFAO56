@@ -57,3 +57,43 @@ print("\nFlagged HINT observations:")
 print(flagged_hint[["YEAR", "MONTH", "DAY", "STID", "QC_REASONS"]].to_string(index=False))
 
 print(f"\nNumber of flagged HINT observations: {len(flagged_hint)}")
+
+# Inspect the 3-day neighbourhood around the first flagged date
+first_flagged_date = flagged_hint.iloc[0]["DATE"]
+
+start_date = first_flagged_date - pd.Timedelta(days=3)
+end_date = first_flagged_date + pd.Timedelta(days=3)
+
+hint_neighbourhood = hint_df[
+    hint_df["DATE"].between(start_date, end_date)
+].copy()
+
+print("\n" + "=" * 70)
+print("HINT — FIRST FLAGGED OBSERVATION")
+print("=" * 70)
+
+print(f"Flagged date : {first_flagged_date.date()}")
+print(f"Inspection period : {start_date.date()} to {end_date.date()}")
+
+print("\nSurrounding observations:")
+
+columns_to_show = [
+    "DATE",
+    "STID",
+    "RAIN",
+    "ATOT",
+    "AMAX",
+    "TMAX",
+    "TMIN"
+]
+
+available_columns = [
+    col for col in columns_to_show
+    if col in hint_neighbourhood.columns
+]
+
+print(
+    hint_neighbourhood[available_columns]
+    .sort_values("DATE")
+    .to_string(index=False)
+)
