@@ -41,6 +41,18 @@ flagged_hint = hint_qc[
     & (hint_qc["QC_REASONS"].astype(str).str.strip() != "")
 ].copy()
 
+# Create DATE for flagged HINT observations
+flagged_hint["DATE"] = pd.to_datetime(
+    {
+        "year": flagged_hint["YEAR"],
+        "month": flagged_hint["MONTH"],
+        "day": flagged_hint["DAY"]
+    },
+    errors="coerce"
+)
+
+print("\nFlagged HINT dates:")
+print(flagged_hint["DATE"].to_string(index=False))
 print("\nFlagged HINT observations:")
 print(flagged_hint[["YEAR", "MONTH", "DAY", "STID", "QC_REASONS"]].to_string(index=False))
 
